@@ -1,0 +1,31 @@
+# @mgpl-diagnostics/report-reader
+
+> Reads partner-lab report PDFs (Hy Patho Lab, Clinova Pathlabs) into typed JSON: results (value, unit, range, method, H/L flag), patient, sample, dates, signatories with signature images and fingerprints, and NABL accreditation evidence per test. Uses the PDF text layer (exact, no OCR). Node ≥ 20.
+
+Key facts for agents:
+- `extractReport(pdfBytes, { signatures?, file? })` → `{ report, images }`; throws `UnsupportedReportError` for other PDFs.
+- `labelFor(report, test)` → "Performed at … (NABL accredited, MC-…) · Reported by Dr …"; NABL appears only when `test.accredited === true`.
+- Hy Patho prints the doctor's name only inside the signature image: pass `KnownSignature[]` (name + sha/dhash) from your database.
+- A signature may only be shown next to results from the same PDF (`report.source.sha256`).
+- Never commit real reports, extracted data or signatures; fixtures are fictional (`scripts/make-fixtures.ts`).
+- Measured on 165 real reports: 3,888 / 3,888 printed numeric results extracted with the correct value and row.
+
+## Docs
+
+- [README](README.md): usage, output model, accuracy, rules
+- [AGENTS.md](AGENTS.md): rules and map
+- [docs/backend-integration.md](docs/backend-integration.md): api / db-kit / auth-kit / report-kit plan
+- [docs/formats.md](docs/formats.md): layout of each lab's report
+
+## Source
+
+- [src/index.ts](src/index.ts): extractReport, signatories, NABL per test
+- [src/labs/hypatho.ts](src/labs/hypatho.ts), [src/labs/clinova.ts](src/labs/clinova.ts): parsers
+- [src/types.ts](src/types.ts): output model
+- [src/label.ts](src/label.ts): provenance label
+
+## Optional
+
+- [api](https://github.com/mgpl-diagnostics/api)
+- [report-kit](https://github.com/mgpl-diagnostics/report-kit)
+- [catalog-kit](https://github.com/mgpl-diagnostics/catalog-kit)

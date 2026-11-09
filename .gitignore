@@ -1,0 +1,7 @@
+node_modules
+dist
+*.tsbuildinfo
+# never commit real reports, extracted results or signature images
+private/
+*.pdf
+test/fixtures/

@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # The job id "ci" is the required status check on main (see mgpl-diagnostics/.github scripts/protect-repos.mjs).
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - run: npm install --no-package-lock
+      - run: npm run typecheck
+      - name: Tests (fictional reports in both layouts)
+        run: npm test
+      - run: npm run build
+      - name: No real reports or extracted data committed
+        run: |
+          if git ls-files | grep -iE '\.pdf$|^private/|^test/fixtures/|\.png$'; then echo "real or generated report files must not be committed"; exit 1; fi
+      - name: llms-full.txt is up to date (run `npm run llms` and commit if this fails)
+        run: npm run llms && git diff --exit-code -- llms-full.txt
