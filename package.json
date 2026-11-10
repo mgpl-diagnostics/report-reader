@@ -40,7 +40,7 @@
     "llms": "node scripts/llms-full.mjs @mgpl-diagnostics/report-reader README.md AGENTS.md docs llms.txt package.json src scripts test"
   },
   "dependencies": {
-    "pdfjs-dist": "6.4.299"
+    "pdfjs-dist": "6.5.438"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
